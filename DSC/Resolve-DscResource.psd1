@@ -1,0 +1,7 @@
+@{
+    DscResources = @(
+        'cChoco',
+        'NetworkingDsc',
+        'ComputerManagementDsc'
+    )
+}

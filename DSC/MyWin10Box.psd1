@@ -14,7 +14,11 @@
                 'vscode',
                 'chocolatey-vscode.extension',
                 'firefox',
-                'vmware-powercli-psmodule'
+                'vmware-powercli-psmodule',
+                'RSAT'
+            )
+            WindowsFeatures = @(
+                'IIS'
             )
         }
     )

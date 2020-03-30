@@ -52,6 +52,7 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -100,5 +101,15 @@ Vagrant.configure("2") do |config|
   # Can't install VSCode Extensions via DSC due to DSC using the Computer Account and VSCode installs extensions in the user's profile
   # Choco thinks the extensions install successfully, but it ain't
   config.vm.provision "shell",
-    inline: 'choco install vscode-powershell vscode-gitlens vscode-icons vscode-markdownlint vscode-docker vscode-ansible -y'
+    # Use Settings Sync Extension to sync any other extensions or settings
+    inline: 'choco install vscode-settingssync -y'
+
+  config.vm.provision "file",
+    source: '~/Library/Application Support/Code/User/syncLocalSettings.json',
+    destination: '%APPDATA%\Code\User\syncLocalSettings.json'
+
+  config.vm.provision "file",
+    source: '~/Library/Application Support/Code/User/settings.json',
+    destination: '%APPDATA%\Code\User\settings.json'
+
 end

@@ -2,6 +2,7 @@
     DscResources = @(
         'cChoco',
         'NetworkingDsc',
-        'ComputerManagementDsc'
+        'ComputerManagementDsc',
+        'ActiveDirectoryDsc'
     )
 }

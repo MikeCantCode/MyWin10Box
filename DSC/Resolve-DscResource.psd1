@@ -3,6 +3,7 @@
         'cChoco',
         'NetworkingDsc',
         'ComputerManagementDsc',
-        'ActiveDirectoryDsc'
+        'ActiveDirectoryDsc',
+        'VMware.vSphereDsc'
     )
 }

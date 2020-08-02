@@ -4,21 +4,24 @@
 
 [CmdletBinding()]
 param (
+    [Parameter(Mandatory,ParameterSetName = 'DataFile')]
+    [string]
     $DataFile,
+
+    [Parameter(Mandatory,ParameterSetName = 'DscResource')]
     [string[]]
     $DscResource,
+
     [switch]
     $Force
+
 )
 
-if ($DataFile -and $DscResource) {
-    Write-Error -Message "You must only specify one parameter! Either '$DataFile' or '$DscResource'. Tip: You can specify multiple DSC Resources in the '$DscResource parameter."
-}
-elseif ($DataFile) {
+if ($PSBoundParameters.ContainsKey('DataFile')) {
     $DscResourcesDataFile = Import-PowerShellDataFile -Path $DataFile
     $DscResources = $DscResourcesDataFile.DscResources
 }
-elseif ($DscResource) {
+elseif ($PSBoundParameters.ContainsKey('DscResource')) {
     $DscResources = $DscResource
 }
 else {
@@ -26,9 +29,18 @@ else {
     $DscResources = $DscResourcesDataFile.DscResources
 }
 
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Write-Verbose -Message "Testing for NuGet..."
+$MinNugetVersion = 2.8.5.201
+$NuGet = Get-PackageProvider -Name NuGet
+if ($NuGet.Version -lt $MinNugetVersion) {
+    Write-Verbose -Message "NuGet is missing or below minimum version [$MinNugetVersion]. Installing now..."
+    Install-PackageProvider -Name NuGet -MinimumVersion $MinNugetVersion -Force
+    $NuGet = Get-PackageProvider -Name NuGet
+}
+Write-Verbose -Message "Installed Nuget Version: [$($Nuget.Version)]"
 
-Write-Host "Installing DSC Resources"
+
+Write-Host "Installing DSC Resources..."
 foreach ($DscResource in $DscResources) {
     $Module = Get-Module -Name $DscResource -ListAvailable
     if (-not($Module)) {

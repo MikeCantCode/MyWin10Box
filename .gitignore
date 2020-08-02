@@ -1,0 +1,5 @@
+# exclude the .vagrant folder
+/.vagrant
+
+# exclude any .Cred files
+*.Cred

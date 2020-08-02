@@ -6,6 +6,7 @@ Configuration MyWin10Box {
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -Module ComputerManagementDsc
     Import-DscResource -ModuleName cChoco
+    Import-DscResource -ModuleName VMware.vSphereDSC
 
     Node $AllNodes.NodeName {
 
@@ -13,10 +14,9 @@ Configuration MyWin10Box {
             Name = $Node.NodeName
         }
 
-        PendingReboot AfterComputerNameChange
-        {
-            Name       = 'AfterComputerNameChange'
-            DependsOn  = "[Computer]$($Node.NodeName)"
+        PendingReboot AfterComputerNameChange {
+            Name      = 'AfterComputerNameChange'
+            DependsOn = "[Computer]$($Node.NodeName)"
         }
 
         cChocoInstaller installChoco {
@@ -35,6 +35,12 @@ Configuration MyWin10Box {
     }
 
     Node $AllNodes.Where{ $_.Role -eq "MyWin10Box" }.NodeName {
+
+        PowerCLISettings PowerCLISettings {
+            SettingsScope = 'LCM'
+            ParticipateInCeip = $false
+            InvalidCertificateAction = 'Ignore'
+        }
 
     }
 
